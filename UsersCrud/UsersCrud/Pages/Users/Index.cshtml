@@ -1,0 +1,71 @@
+﻿@page
+@model UsersCrud.Controllers.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+
+<p>
+    @if (User.Identity.IsAuthenticated)
+    {
+        @if (User.IsInRole("Admin"))
+        {
+            <span>Admin</span>
+        }
+        <ul>
+            <li>Username: @User.Identity.Name</li>
+            <li>Login: @User.Identity.IsAuthenticated</li>
+            <!-- Is Admin: @User.IsInRole("admin") -->
+        </ul>
+    }
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].UserFirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].UserLastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].UserPassword)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].UserGender)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.User)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserFirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserLastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserPassword)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserGender.GenderName)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.UserId">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.UserId">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.UserId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

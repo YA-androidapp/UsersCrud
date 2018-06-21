@@ -1,0 +1,92 @@
+001. ASP.NET Core Webアプリケーションのソリューションを作成
+
+002. Webアプリケーションを選択
+
+003. 認証の変更→個別のユーザーアカウント
+
+004. DB作成
+(localdb)\MSSQLLocalDB
+CREATE DATABASE [usersDb]
+
+use usersDb
+CREATE TABLE [Gender] (
+  [GenderId] INT IDENTITY (1, 1) NOT NULL,
+  [GenderName] NVARCHAR (256) NOT NULL,
+  PRIMARY KEY CLUSTERED ([GenderId] ASC)
+);
+
+CREATE TABLE [Role] (
+  [RoleId] INT IDENTITY (1, 1) NOT NULL,
+  [RoleName] NVARCHAR (256) NOT NULL,
+  PRIMARY KEY CLUSTERED ([RoleId] ASC)
+);
+
+CREATE TABLE [User] (
+  [UserId] INT IDENTITY (1, 1) NOT NULL,
+  [UserGenderId] INT NOT NULL,
+  [UserFirstName] NVARCHAR (256) NOT NULL,
+  [UserLastName] NVARCHAR (256) NOT NULL,
+  [UserPassword] NVARCHAR (256) NOT NULL,
+  PRIMARY KEY CLUSTERED ([UserId] ASC)
+);
+
+CREATE TABLE [UserRole] (
+  [UserRoleId] INT IDENTITY (1, 1) NOT NULL,
+  [UserId] INT NOT NULL,
+  [RoleId] INT NOT NULL,
+  PRIMARY KEY CLUSTERED ([UserRoleId] ASC),
+  CONSTRAINT [FK_dbo.UserRole_dbo.User_UserId] FOREIGN KEY ([UserId])
+    REFERENCES [dbo].[User] ([UserId]) ON DELETE CASCADE,
+  CONSTRAINT [FK_dbo.UserRole_dbo.Role_RoleId] FOREIGN KEY ([RoleId])
+    REFERENCES [dbo].[Role] ([RoleId]) ON DELETE CASCADE
+);
+
+ALTER TABLE [User]
+ADD CONSTRAINT FK_User_Gender FOREIGN KEY (UserGenderId)
+    REFERENCES Gender (GenderId);
+
+INSERT INTO [dbo].[Gender] VALUES(N'男');
+INSERT INTO [dbo].[Gender] VALUES(N'女');
+
+INSERT INTO [dbo].[Role] VALUES(N'管理者');
+INSERT INTO [dbo].[Role] VALUES(N'会員');
+INSERT INTO [dbo].[Role] VALUES(N'一般');
+
+INSERT INTO [dbo].[User] VALUES(1,N'名1',N'姓1',N'PW1');
+INSERT INTO [dbo].[User] VALUES(2,N'名2',N'姓2',N'PW2');
+
+INSERT INTO [dbo].[UserRole] VALUES(1,1);
+INSERT INTO [dbo].[UserRole] VALUES(2,2);
+
+005. appsetting.jsonに接続文字列を追記(Identity用とは別に)
+"Users": "Server=(localdb)\\mssqllocaldb;Database=usersDb;Trusted_Connection=True"
+
+006. モデルクラス自動生成
+dotnet ef dbcontext scaffold "Server=(localdb)\MSSQLLocalDB;Database=usersDb;Trusted_Connection=True" Microsoft.EntityFrameworkCore.SqlServer -o Models
+
+007. ソリューションエクスプローラからControllersを右クリックし、「追加」＞「新規スキャフォールディングアイテム」＞「MVC Controller with views, using Entity Framework (CRUD)」
+モデルクラス　User (PeopleCrud.Models)
+データコンテキストクラス　usersDbContext (PeopleCrud.Models)
+
+008. ソリューションエクスプローラからControllersを右クリックし、「追加」＞「コントローラー」＞「Entity Framework を使用したアクションがある Web API 2 コントローラー」
+User (UsersCrud.Models)
+usersDbContext (UsersCrud.Models)
+UsersController
+
+009. ソリューションエクスプローラからControllersを右クリックし、「追加」＞「コントローラー」＞「Entity Framework を使用したビューがある MVC コントローラー」
+User (UsersCrud.Models)
+usersDbContext (UsersCrud.Models)
+UsersController
+
+010. Pages/Users配下にControllers配下のcshtmlファイルを移動
+
+011. UsersControllerの重複Actionをコメントアウト
+
+012. UsersControllerの各メソッドに[Route("Users/<メソッド名>")]
+
+013. Nugetパッケージマネジャーコンソール
+Enable-Migrations
+Add-Migration migration
+Update-Database
+
+014. Models\IdentityModels.cs http://surferonwww.info/BlogEngine/post/2017/11/02/role-management-on-aspnet-identity-for-mvc-application.aspx http://kaz16a.hatenablog.jp/entry/2014/10/13/000843

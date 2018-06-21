@@ -1,0 +1,43 @@
+﻿@page
+@model UsersCrud.Controllers.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.User.UserFirstName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.UserFirstName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.UserLastName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.UserLastName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.UserPassword)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.UserPassword)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.UserGender)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.UserGender.GenderName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.User.UserId">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
